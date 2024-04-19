@@ -18,6 +18,8 @@ namespace models
             EndReservationDateTime = end;
        }
 
+       public Reservation() => NameUser = string.Empty;
+
         public override string ToString()
         {
             return ($"Reservation {ReservationId} de {NameUser}, place reserver {ParkingSpotId} duree : {BeginReservationDateTime} à {EndReservationDateTime}");
