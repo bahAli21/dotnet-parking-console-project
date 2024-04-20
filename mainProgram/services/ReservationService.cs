@@ -16,10 +16,17 @@ namespace services
             FileReservation.Add(reservation);
         }
 
-        public void CancelReservation(Reservation reservation)
+        public void CancelReservation(int reservationID)
         {
             Trace.Assert(FileReservation.Count > 0);
-            FileReservation.Remove(reservation);
+            for (int i = 0; i < FileReservation.Count; i++)
+            {
+                if (FileReservation[i].ReservationId == reservationID)
+                {
+                    FileReservation.Remove(FileReservation[i]);
+                }
+            }
+            
         }
 
         public Reservation GetReservationsByParkingSpot(int parkingSpotId)

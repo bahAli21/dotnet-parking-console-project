@@ -7,7 +7,7 @@ namespace services
     public class ParkingService
     {
        public List<ParkingSpot> ListParkingSpots { get; set; }
-       ParkingService() => ListParkingSpots = new List<ParkingSpot>();
+       public ParkingService() => ListParkingSpots = new List<ParkingSpot>();
 
        public void AddParkingSpot(ParkingSpot parkingSpot)
        {

@@ -1,4 +1,5 @@
 ﻿using System;
+using views;
 
 namespace App
 {
@@ -6,6 +7,9 @@ namespace App
     {
         public static void Main(string[] args)
         {
+            
+            Display display = new Display();
+            display.Show();
 
         }
     }
