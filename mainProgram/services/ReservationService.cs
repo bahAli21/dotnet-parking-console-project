@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using models;
 using System.Diagnostics;
+using database;
 
 namespace services
 {
@@ -14,6 +15,15 @@ namespace services
         public void MakeReservation(Reservation reservation)
         {
             FileReservation.Add(reservation);
+            string[] arrReservation =
+            {
+                reservation.ReservationId.ToString(),
+                reservation.NameUser,
+                reservation.ParkingSpotId.ToString(),
+                reservation.BeginReservationDateTime.ToString(),
+                reservation.EndReservationDateTime.ToString()
+            };
+            Database.SetData("db.txt", arrReservation);
         }
 
         public void CancelReservation(int reservationID)
