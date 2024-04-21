@@ -23,7 +23,7 @@ namespace services
                 reservation.BeginReservationDateTime.ToString(),
                 reservation.EndReservationDateTime.ToString()
             };
-            Database.SetData("db.txt", arrReservation);
+            Database.SetData("dbReservation.txt", arrReservation);
         }
 
         public void CancelReservation(int reservationID)
