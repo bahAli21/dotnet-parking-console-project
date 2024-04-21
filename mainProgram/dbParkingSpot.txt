@@ -1,0 +1,2 @@
+1 ZONE_A 20 false
+21 ZONE_A 20 true
