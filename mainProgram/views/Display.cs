@@ -126,7 +126,8 @@ namespace views
                 }
                 else
                 {
-                    Console.WriteLine($"ID -> {data[i][0]}, Categorie -> {data[i][1]}, Taille -> {data[i][2]}, status -> Libre");
+                    if (data[i][3] == "false")
+                        Console.WriteLine($"ID -> {data[i][0]}, Categorie -> {data[i][1]}, Taille -> {data[i][2]}, status -> Libre");
                 }
             }
 
@@ -183,12 +184,19 @@ namespace views
                 Console.WriteLine("Entrez l'identifiant de votre reservation");
                 string idRes = Console.ReadLine();
                 string[][] data = {};
+                int idx = -1;
                 Database.GetData("dbReservation.txt", ref data);
                 File.WriteAllText("dbReservation.txt", string.Empty);
                 for (int i = 0; i<data.Length; ++i)
                 {
                     if (data[i][0] != idRes)
+                    {
                         Database.SetData("dbReservation.txt", data[i]);
+
+                    }
+                    else
+                        idx = i;
+
                 }
 
                 //ParkingSpot
@@ -197,12 +205,12 @@ namespace views
                 File.WriteAllText("dbParkingSpot.txt", string.Empty);
                 for (int i = 0; i < dataParking.Length; ++i)
                 {
-                    if (data[i][0] == idRes)
+                    if (dataParking[i][0] == data[idx][2])
                     {
-                        if (dataParking[i][0] == data[i][2])
-                            dataParking[i][3] = "false";
+                        dataParking[i][3] = "false";
                     }
-                        
+                            
+
                     Database.SetData("dbParkingSpot.txt", dataParking[i]); //Oui vide le contenue avant
                 }
 
