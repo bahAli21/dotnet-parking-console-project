@@ -1,4 +1,5 @@
 using System;
+using database;
 using models;
 using services;
 
@@ -9,17 +10,14 @@ namespace views
         string cle = string.Empty;
         string cleWelcom = string.Empty;
 
+        string appKey = string.Empty;
+
         ReservationService serviceReservation = new ReservationService();
         ParkingService parkingService = new ParkingService();
-        ParkingSpot ParkingSpot1 = new ParkingSpot(1, "SUD", 100, false);
-        ParkingSpot ParkingSpot2 = new ParkingSpot(2, "NORD", 500, false);
-        ParkingSpot ParkingSpot3 = new ParkingSpot(1, "EST", 900, true);
 
         public Display()
         {
-            parkingService.AddParkingSpot(ParkingSpot1);
-            parkingService.AddParkingSpot(ParkingSpot2);
-            parkingService.AddParkingSpot(ParkingSpot3);
+
         }
         public void Show()
         {
@@ -44,116 +42,171 @@ namespace views
 
         public string Welcom()
         {
+            //appKey = " ";
             do
             {
                 Console.Clear();
-                Console.WriteLine("        ------------------------------ Bienvenue dans notre system ----------------------------------");
+                Console.WriteLine("        ------------------------------ Bienvenue dans notre système ----------------------------------");
                 Console.WriteLine();
-                Console.WriteLine("1. Users ? tapez 'u' ");
+                Console.WriteLine("1. Utilisateurs ? Tapez 'u'");
                 Console.WriteLine();
-                Console.WriteLine("2. Admin ? tapez 'a' ");
+                Console.WriteLine("2. Administrateurs ? Tapez 'a'");
                 Console.WriteLine();
-                Console.WriteLine("3. Quitter ? tapez 'q' ");
+                Console.WriteLine("3. Quitter ? Tapez 'q'");
 
-                Console.WriteLine("        ---------------------------------------Reponse ici--------------------------------------------");
-                cleWelcom = Console.ReadLine();
+                Console.WriteLine("        ---------------------------------------Réponse ici--------------------------------------------");
+                appKey = Console.ReadLine();
 
-            } while (cleWelcom == "");
+            } while (appKey != "u" && appKey != "a" && appKey != "q");
 
-            return cleWelcom;
+            return appKey;
         }
 
         public void DisplayUsersTemplate(int idReservation, DateTime begin)
         {
-            
-            Console.WriteLine("             ---------------------------------------Mode User---------------------------------------------");
+
+            Console.WriteLine("             ---------------------------------------Mode Utilisateur---------------------------------------------");
             Console.WriteLine();
-            Console.WriteLine("Faire une Reservation ? tapez 'r' ");
+            Console.WriteLine("Faire une Réservation ? Tapez 'r' ");
             Console.WriteLine();
-            Console.WriteLine("Pour une Annulation ? tapez 'c' ");
+            Console.WriteLine("Pour une Annulation ? Tapez 'c' ");
             Console.WriteLine();
-            Console.WriteLine("Liste de nos places de parking ? tapez 'place' ");
+            Console.WriteLine("Liste de nos places de parking ? Tapez 'place' ");
             Console.WriteLine();
-            Console.WriteLine("Back <-- ? tapez 'b' ");
+            Console.WriteLine("Retour <-- ? Tapez 'b' ");
             Console.WriteLine();
-            Console.WriteLine("Quittez ? tapez 'q' ");
+            Console.WriteLine("Quitter ? Tapez 'q' ");
             Console.WriteLine();
 
-            Console.WriteLine("Reponses ici :");
-            cle = Console.ReadLine();
-            while (cle != "q" && cle != "b") 
+            Console.WriteLine("Réponses ici :");
+            string appKey = Console.ReadLine(); // Utilisation de appKey au lieu de cle
+
+            while (appKey != "q" && appKey != "b")
             {
-                if (cle == "r")
+                if (appKey == "r")
                 {
                     FormulaireReservations(idReservation, begin);
-                    cle = " ";
                 }
-                else if (cle == "c")
+                else if (appKey == "c")
                 {
                     FormulaireAnnulation();
-                    cle = " ";
                 }
-                else if (cle == "place")
+                else if (appKey == "place")
                 {
                     Console.WriteLine();
-                    Console.WriteLine("         ------------------------------Nos place de parking-------------------------------------");
-                    for (int i = 0; i < parkingService.ListParkingSpots.Count; i++)
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine(parkingService.ListParkingSpots[i]);
-                    }
-                    cle = " ";
+                    Console.WriteLine("         ------------------------------Nos places de parking-------------------------------------");
 
+                    string[][] data = { };
+                    Database.GetData("dbParkingSpot.txt", ref data);
+                    // Lire les données du fichier et les afficher
+                    DisplayDataFromFile(data);
+                }
+
+                Console.WriteLine("Réponses ici :"); 
+                appKey = Console.ReadLine(); // Mise à jour de appKey avec la nouvelle entrée utilisateur
+            }
+
+        }
+
+        
+        public void DisplayDataFromFile(string[][] data, int status = 0)
+        {
+            for (int i = 0; i < data.Length; i++)
+            {
+                if (status == 0)
+                {
+                    if (data[i][3] == "true")
+                    {
+                        Console.WriteLine($"ID -> {data[i][0]}, Categorie -> {data[i][1]}, Taille -> {data[i][2]}, status -> Occupée");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"ID -> {data[i][0]}, Categorie -> {data[i][1]}, Taille -> {data[i][2]}, status -> Libre");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"ID -> {data[i][0]}, Categorie -> {data[i][1]}, Taille -> {data[i][2]}, status -> Libre");
                 }
             }
 
-            if(cle == "b") {
-                Welcom();
-                cle = " ";
-            }
-            
         }
 
         public void FormulaireReservations(int idReservation, DateTime begin)
         {
-            Console.Clear();
+            Console.WriteLine("Voici la liste de nos place disponibles");
+
+            Console.WriteLine();
+            Console.WriteLine("******************************************************");
+
+            string[][] data = { };
+            Database.GetData("dbParkingSpot.txt", ref data);
+            // Lire les données du fichier et les afficher
+            DisplayDataFromFile(data, 1); //1 pour indiquer qu'on souhaite aficher que les places disponibles
+            Console.WriteLine();
+            Console.WriteLine("******************************************************");
             Console.Write("Entrer votre nom : ");
             string name = Console.ReadLine();
             Console.Write("Entrer la durée de reservation en Heure : ");
             string duree = Console.ReadLine();
 
-            Console.WriteLine("Avez vous une place de preference ? tapez 'y' pour yes et 'n' pour non");
-            Console.WriteLine("Reponses ici :");
-            string cle = Console.ReadLine();
-            if (cle == "y")
-            {
-                Console.Clear();
-                Console.WriteLine("Entrez l'identifiant de la place");
-                string id = Console.ReadLine();
-                Reservation reservation = new Reservation(idReservation, name, int.Parse(id), begin, begin.AddHours(int.Parse(duree)));
-                serviceReservation.MakeReservation(reservation);
-                Console.Clear();
-                Console.WriteLine(reservation);
-                Console.WriteLine("Reservation effectuer avec succee");
-            }
+            Console.WriteLine("Saisir L'identifiant de la place de parking");
+           
+            string id = Console.ReadLine();
+            Reservation reservation = new Reservation(idReservation, name, int.Parse(id), begin, begin.AddHours(int.Parse(duree)));
+            serviceReservation.MakeReservation(reservation);
 
+            //ParkingSpot
+            string[][] dataParking = { };
+            Database.GetData("dbParkingSpot.txt", ref dataParking);
+            File.WriteAllText("dbParkingSpot.txt", string.Empty);
+            for (int i = 0; i < dataParking.Length; ++i)
+            {
+                if (dataParking[i][0] == id)
+                {
+                    dataParking[i][3] = "true";
+                }
+                Database.SetData("dbParkingSpot.txt", dataParking[i]); //Oui vide le contenue avant
+            }
+            Console.WriteLine(reservation);
+            Console.WriteLine("Reservation effectuer avec succee, vous aurez besoin de l'identifiant");
         }
 
         public void FormulaireAnnulation()
         {
-            Console.Clear();
-            Console.WriteLine("------------ Attention cette action est definitive (!) -------------");
+            Console.WriteLine("--------------------- Attention cette action est definitive (!) -------------");
             Console.WriteLine("Voulez-vous continuez ? 't' continuer 'q' quitter ");
             Console.WriteLine("Reponses ici :");
             string cle = Console.ReadLine();
             if (cle == "t")
             {
-                Console.Clear();
                 Console.WriteLine("Entrez l'identifiant de votre reservation");
                 string idRes = Console.ReadLine();
-                serviceReservation.CancelReservation(int.Parse(idRes));
-            } else
-                Console.Clear() ;
+                string[][] data = {};
+                Database.GetData("dbReservation.txt", ref data);
+                File.WriteAllText("dbReservation.txt", string.Empty);
+                for (int i = 0; i<data.Length; ++i)
+                {
+                    if (data[i][0] != idRes)
+                        Database.SetData("dbReservation.txt", data[i]);
+                }
+
+                //ParkingSpot
+                string[][] dataParking = { };
+                Database.GetData("dbParkingSpot.txt", ref dataParking);
+                File.WriteAllText("dbParkingSpot.txt", string.Empty);
+                for (int i = 0; i < dataParking.Length; ++i)
+                {
+                    if (data[i][0] == idRes)
+                    {
+                        if (dataParking[i][0] == data[i][2])
+                            dataParking[i][3] = "false";
+                    }
+                        
+                    Database.SetData("dbParkingSpot.txt", dataParking[i]); //Oui vide le contenue avant
+                }
+
+            }
         }
     }
 }
