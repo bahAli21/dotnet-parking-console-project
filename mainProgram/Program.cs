@@ -10,7 +10,7 @@ namespace App
         {
             //---------------------------------------Je cree un fichier -------------------------------------
             // Vérifions si un argument de ligne de commande a été fourni
-            if (args.Length == 0)
+           /* if (args.Length == 0)
             {
                 Console.WriteLine("Veuillez fournir un nom de fichier en argument.");
                 return;
@@ -30,11 +30,11 @@ namespace App
             }
 
             // Créons le fichier
-            File.Create(cheminFichier);
+            File.Create(cheminFichier); */
 
             //-----------------------------------------------Fin de la creation du fichier ------------------------------
 
-            Console.WriteLine($"Le fichier \"{nomFichier}\" a été créé avec succès à la racine du projet.");
+            //Console.WriteLine($"Le fichier \"{nomFichier}\" a été créé avec succès à la racine du projet.");
             Display display = new Display();
             display.Show();
 
